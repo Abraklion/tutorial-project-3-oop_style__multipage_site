@@ -149,6 +149,23 @@ class Slider {
       this.slideIndex = this.slides.length;
     }
 
+    try {
+      // модернизация для всплывающего блока
+      this.hanson.style.opacity = '0';
+
+      if (n === 3) {
+        this.hanson.classList.add('animated');
+        setTimeout(() => {
+          this.hanson.style.opacity = '1';
+          this.hanson.classList.add('slideInUp');
+        }, 3000);
+      } else {
+        this.hanson.classList.remove('slideInUp');
+      }
+    } catch (e) {
+      console.info('Slider : ' + e.message);
+    }
+
     this.slides.forEach(slide => {
       slide.style.display = 'none';
     });
@@ -167,6 +184,13 @@ class Slider {
     /**
      * инициализирует слайдер
      */
+    try {
+      // модернизация для всплывающего блока
+      this.hanson = document.querySelector('.hanson');
+    } catch (e) {
+      console.info('Slider : ' + e.message);
+    }
+
     this.btns.forEach(item => {
       item.addEventListener('click', () => {
         this.plusSlides(1);
