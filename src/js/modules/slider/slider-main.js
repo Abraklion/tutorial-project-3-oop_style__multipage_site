@@ -1,31 +1,29 @@
-export default class Slider {
+import Slider from './slider';
+
+export default class MainSlider extends Slider {
   /**
-   * КЛАСС СЛАЙДЕР
+   * ГЛАВНЫЙ СЛАЙДЕР
    *
-   * page   -> серектор обертки слайдера
-   * btns   -> серектор кнопка для переключения слайдера
+   * options   -> опции для работы слайдера (смотрите подробно в классе Slider)
    */
 
   /** ===========================
    *        Конструктор        *
-  =========================== */
+   =========================== */
 
-  constructor(page, btns){
-    this.page = document.querySelector(page);
-    this.slides = Array.from(this.page.children);
-    this.btns = document.querySelectorAll(btns);
-    this.slideIndex = 1;
+  constructor(options) {
+    super(options);
   }
 
   /** ===========================
    *     Публичные методы      *
-  =========================== */
+   =========================== */
 
   showSlides(n) {
     /**
-    * показывает слайд
-    * n -> номер слайда, type: number
-    */
+     * показывает слайд
+     * n -> номер слайда, type: number
+     */
     if (n > this.slides.length) {
       this.slideIndex = 1;
     }
@@ -92,4 +90,5 @@ export default class Slider {
 
     this.showSlides(this.slideIndex);
   }
+
 }
