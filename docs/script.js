@@ -96,16 +96,42 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/slider/slider-main */ "./src/js/modules/slider/slider-main.js");
-/* harmony import */ var _modules_playVideo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/playVideo */ "./src/js/modules/playVideo.js");
+/* harmony import */ var _modules_slider_slider_mini__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/slider/slider-mini */ "./src/js/modules/slider/slider-mini.js");
+/* harmony import */ var _modules_playVideo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/playVideo */ "./src/js/modules/playVideo.js");
+
 
 
 window.addEventListener('DOMContentLoaded', () => {
   const mainSlider = new _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_0__["default"]({
     btns: '.next',
-    constructor: '.page'
+    container: '.page'
   });
   mainSlider.render();
-  const player = new _modules_playVideo__WEBPACK_IMPORTED_MODULE_1__["default"]('.showup .play', '.overlay');
+  const showUpSlider = new _modules_slider_slider_mini__WEBPACK_IMPORTED_MODULE_1__["default"]({
+    container: '.showup__content-slider',
+    prev: '.showup__prev',
+    next: '.showup__next',
+    activeClass: 'card-active',
+    animate: true
+  });
+  showUpSlider.init();
+  const modulesSlider = new _modules_slider_slider_mini__WEBPACK_IMPORTED_MODULE_1__["default"]({
+    container: '.modules__content-slider',
+    prev: '.modules__info-btns .slick-prev',
+    next: '.modules__info-btns .slick-next',
+    activeClass: 'card-active',
+    animate: true,
+    autoplay: true
+  });
+  modulesSlider.init();
+  const feedSlider = new _modules_slider_slider_mini__WEBPACK_IMPORTED_MODULE_1__["default"]({
+    container: '.feed__slider',
+    prev: '.feed__slider-wrapper .slick-prev',
+    next: '.feed__slider-wrapper .slick-next',
+    activeClass: 'feed__item-active'
+  });
+  feedSlider.init();
+  const player = new _modules_playVideo__WEBPACK_IMPORTED_MODULE_2__["default"]('.showup .play', '.overlay');
   player.init();
 });
 
@@ -257,7 +283,7 @@ class MainSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
       console.info('Slider : ' + e.message);
     }
 
-    this.slides.forEach(slide => {
+    Array.from(this.slides).forEach(slide => {
       slide.style.display = 'none';
     });
     this.slides[this.slideIndex - 1].style.display = 'block';
@@ -299,6 +325,96 @@ class MainSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
 /***/ }),
 
+/***/ "./src/js/modules/slider/slider-mini.js":
+/*!**********************************************!*\
+  !*** ./src/js/modules/slider/slider-mini.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return MiniSlider; });
+/* harmony import */ var _slider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./slider */ "./src/js/modules/slider/slider.js");
+
+class MiniSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  /**
+   * ВТОРОСТЕПЕННЫЕ СЛАЙДЕР
+   *
+   * options   -> опции для работы слайдера (смотрите подробно в классе Slider)
+   */
+
+  /** ===========================
+   *        Конструктор        *
+   =========================== */
+  constructor(option) {
+    super(option);
+  }
+  /** ===========================
+   *     Публичные методы      *
+   =========================== */
+
+
+  decorizeSlides() {
+    /**
+     * задает класс активность и анимацию актовного слайда
+     */
+    Array.from(this.slides).forEach(slide => {
+      slide.classList.remove(this.activeClass);
+
+      if (this.animate) {
+        slide.querySelector('.card__title').style.opacity = '0.4';
+        slide.querySelector('.card__controls-arrow').style.opacity = '0';
+      }
+    });
+    this.slides[0].classList.add(this.activeClass);
+
+    if (this.animate) {
+      this.slides[0].querySelector('.card__title').style.opacity = '1';
+      this.slides[0].querySelector('.card__controls-arrow').style.opacity = '1';
+    }
+  }
+
+  bindTriggers() {
+    /**
+     * при клике на триггер(кнопки) переключает слайдер
+     */
+    this.next.addEventListener('click', () => {
+      this.container.append(this.slides[0]);
+      this.decorizeSlides();
+    });
+    this.prev.addEventListener('click', () => {
+      let active = this.slides[this.slides.length - 1];
+      this.container.prepend(active);
+      this.decorizeSlides();
+    });
+  }
+
+  init() {
+    /**
+     * инициализирует слайдер
+     */
+    this.container.style.cssText = `
+            display: flex;
+            flex-wrap: wrap;
+            overflow: hidden;
+            align-items: flex-start;
+        `;
+    this.bindTriggers();
+    this.decorizeSlides();
+
+    if (this.autoplay) {
+      // автовоспроизведение
+      setInterval(() => {
+        this.next.click();
+      }, 5000);
+    }
+  }
+
+}
+
+/***/ }),
+
 /***/ "./src/js/modules/slider/slider.js":
 /*!*****************************************!*\
   !*** ./src/js/modules/slider/slider.js ***!
@@ -313,25 +429,37 @@ class Slider {
   /**
    * КЛАСС СЛАЙДЕР
    *
-   * constructor   -> серектор обертки слайдера
-   * btns          -> серектор кнопка для переключения MainSlider слайдера
-   * next          -> кнопка вперед
-   * prev          -> кнопка назад
+   * container   -> серектор обертки слайдера
+   * btns          -> серектор кнопки для переключения MainSlider слайдера
+   * next          -> серектор кнопка вперед
+   * prev          -> серектор кнопка назад
+   * activeClass   -> класс активности
+   * animate       -> булевое значения (если ли анимация)
+   * autoplay      -> булевое значения (есть или автовоспроизведения)
    */
 
   /** ===========================
    *        Конструктор        *
   =========================== */
   constructor({
-    constructor = null,
+    container = null,
     btns = null,
     next = null,
-    prev = null
+    prev = null,
+    activeClass = '',
+    animate = false,
+    autoplay = false
   } = {}) {
-    this.constructor = document.querySelector(constructor);
-    this.slides = Array.from(this.constructor.children);
+    this.container = document.querySelector(container);
+    this.slides = this.container.children; // коллекция живая
+
     this.btns = document.querySelectorAll(btns);
     this.slideIndex = 1;
+    this.prev = document.querySelector(prev);
+    this.next = document.querySelector(next);
+    this.activeClass = activeClass;
+    this.animate = animate;
+    this.autoplay = autoplay;
   }
 
 }

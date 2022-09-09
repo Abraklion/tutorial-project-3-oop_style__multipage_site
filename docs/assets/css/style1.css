@@ -1,0 +1,18 @@
+/* Error: Expected spaces, was tabs.
+ *     ,
+ * 187 |     &__prev
+ *     | ^^^^
+ *     '
+ *   src\assets\sass\_showup.sass 187:1  @import
+ *   src\assets\sass\style.sass 246:9    root stylesheet */
+
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: Expected spaces, was tabs.\a     \2577 \a 187 \2502      &__prev\a     \2502  ^^^^\a     \2575 \a   src\\assets\\sass\\_showup.sass 187:1  @import\a   src\\assets\\sass\\style.sass 246:9    root stylesheet";
+}
