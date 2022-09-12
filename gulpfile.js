@@ -14,11 +14,15 @@ gulp.task("copy-html", () => {
 });
 
 gulp.task("build-js", () => {
-    return gulp.src("./src/js/main.js")
+    return gulp.src("./src/js/*.js")
                 .pipe(webpack({
                     mode: 'development',
+                  entry: {
+                    main: './src/js/main.js',
+                    modules: './src/js/modules.js',
+                  },
                     output: {
-                        filename: 'script.js'
+                        filename: '[name].js'
                     },
                     watch: false,
                     devtool: "source-map",

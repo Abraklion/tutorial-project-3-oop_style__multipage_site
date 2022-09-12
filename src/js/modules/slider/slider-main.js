@@ -88,6 +88,27 @@ export default class MainSlider extends Slider {
       });
     });
 
+    if(document.querySelectorAll('.prevmodule') && document.querySelectorAll('.nextmodule')){
+      // для страницы modules.html
+
+      document.querySelectorAll('.prevmodule').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.plusSlides(-1);
+        });
+      });
+
+      document.querySelectorAll('.nextmodule').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.plusSlides(1);
+        });
+      });
+
+    }
+
     this.showSlides(this.slideIndex);
   }
 

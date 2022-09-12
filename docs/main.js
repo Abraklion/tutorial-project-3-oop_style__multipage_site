@@ -1727,6 +1727,25 @@ class MainSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
         this.showSlides(this.slideIndex);
       });
     });
+
+    if (document.querySelectorAll('.prevmodule') && document.querySelectorAll('.nextmodule')) {
+      // для страницы modules.html
+      document.querySelectorAll('.prevmodule').forEach(item => {
+        item.addEventListener('click', e => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.plusSlides(-1);
+        });
+      });
+      document.querySelectorAll('.nextmodule').forEach(item => {
+        item.addEventListener('click', e => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.plusSlides(1);
+        });
+      });
+    }
+
     this.showSlides(this.slideIndex);
   }
 
@@ -1876,4 +1895,4 @@ class Slider {
 /***/ })
 
 /******/ });
-//# sourceMappingURL=script.js.map
+//# sourceMappingURL=main.js.map
