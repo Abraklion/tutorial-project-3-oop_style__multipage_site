@@ -1,6 +1,6 @@
 export default class VideoPlayer {
   /**
-   * КЛАСС СЛАЙДЕР
+   * КЛАСС ВИДЕОПЛЕЕР
    *
    * triggers   -> селектор который открывает модальное окно
    * overlay   -> серектор модального окно
@@ -26,13 +26,21 @@ export default class VideoPlayer {
      */
     this.btns.forEach(btn => {
       btn.addEventListener('click', () => {
+
         if (document.querySelector('iframe#frame')) {
           this.overlay.style.display = 'flex';
-        } else {
-          const path = btn.getAttribute('data-url');
 
-          this.createPlayer(path);
+          if (this.path !== btn.getAttribute('data-url')) {
+            this.path = btn.getAttribute('data-url');
+
+            this.player.loadVideoById({videoId: this.path});
+          }
+        } else {
+          this.path = btn.getAttribute('data-url');
+
+          this.createPlayer(this.path);
         }
+
       });
     });
   }

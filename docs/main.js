@@ -1329,7 +1329,7 @@ class ValidatorForm {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/slider/slider-main */ "./src/js/modules/slider/slider-main.js");
 /* harmony import */ var _modules_slider_slider_mini__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/slider/slider-mini */ "./src/js/modules/slider/slider-mini.js");
-/* harmony import */ var _modules_playVideo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/playVideo */ "./src/js/modules/playVideo.js");
+/* harmony import */ var _modules_playVideo_playVideo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/playVideo/playVideo */ "./src/js/modules/playVideo/playVideo.js");
 /* harmony import */ var _modules_difference__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/difference */ "./src/js/modules/difference.js");
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
 
@@ -1367,7 +1367,7 @@ window.addEventListener('DOMContentLoaded', () => {
     activeClass: 'feed__item-active'
   });
   feedSlider.init();
-  const player = new _modules_playVideo__WEBPACK_IMPORTED_MODULE_2__["default"]('.showup .play', '.overlay');
+  const player = new _modules_playVideo_playVideo__WEBPACK_IMPORTED_MODULE_2__["default"]('.showup .play', '.overlay');
   player.init();
   new _modules_difference__WEBPACK_IMPORTED_MODULE_3__["default"]('.officerold', '.officernew', '.officer__card-item').init();
   new _modules_forms__WEBPACK_IMPORTED_MODULE_4__["default"]('.form').init();
@@ -1546,10 +1546,10 @@ class Form {
 
 /***/ }),
 
-/***/ "./src/js/modules/playVideo.js":
-/*!*************************************!*\
-  !*** ./src/js/modules/playVideo.js ***!
-  \*************************************/
+/***/ "./src/js/modules/playVideo/playVideo.js":
+/*!***********************************************!*\
+  !*** ./src/js/modules/playVideo/playVideo.js ***!
+  \***********************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1558,7 +1558,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return VideoPlayer; });
 class VideoPlayer {
   /**
-   * КЛАСС СЛАЙДЕР
+   * КЛАСС ВИДЕОПЛЕЕР
    *
    * triggers   -> селектор который открывает модальное окно
    * overlay   -> серектор модального окно
@@ -1585,9 +1585,16 @@ class VideoPlayer {
       btn.addEventListener('click', () => {
         if (document.querySelector('iframe#frame')) {
           this.overlay.style.display = 'flex';
+
+          if (this.path !== btn.getAttribute('data-url')) {
+            this.path = btn.getAttribute('data-url');
+            this.player.loadVideoById({
+              videoId: this.path
+            });
+          }
         } else {
-          const path = btn.getAttribute('data-url');
-          this.createPlayer(path);
+          this.path = btn.getAttribute('data-url');
+          this.createPlayer(this.path);
         }
       });
     });

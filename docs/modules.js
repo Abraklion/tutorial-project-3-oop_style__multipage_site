@@ -96,6 +96,8 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/slider/slider-main */ "./src/js/modules/slider/slider-main.js");
+/* harmony import */ var _modules_playVideo_playVideoModules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/playVideo/playVideoModules */ "./src/js/modules/playVideo/playVideoModules.js");
+
 
 window.addEventListener('DOMContentLoaded', () => {
   const modulesSlider = new _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_0__["default"]({
@@ -103,7 +105,208 @@ window.addEventListener('DOMContentLoaded', () => {
     btns: '.next'
   });
   modulesSlider.render();
+  new _modules_playVideo_playVideoModules__WEBPACK_IMPORTED_MODULE_1__["default"]('.module__video-item .play', '.overlay').init();
 });
+
+/***/ }),
+
+/***/ "./src/js/modules/playVideo/playVideo.js":
+/*!***********************************************!*\
+  !*** ./src/js/modules/playVideo/playVideo.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return VideoPlayer; });
+class VideoPlayer {
+  /**
+   * КЛАСС ВИДЕОПЛЕЕР
+   *
+   * triggers   -> селектор который открывает модальное окно
+   * overlay   -> серектор модального окно
+   */
+
+  /** ===========================
+   *        Конструктор        *
+   =========================== */
+  constructor(triggers, overlay) {
+    this.btns = document.querySelectorAll(triggers);
+    this.overlay = document.querySelector(overlay);
+    this.close = this.overlay.querySelector('.close');
+  }
+  /** ===========================
+   *     Публичные методы      *
+   =========================== */
+
+
+  bindTriggers() {
+    /**
+     * при клике на триггер показывает плеер
+     */
+    this.btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (document.querySelector('iframe#frame')) {
+          this.overlay.style.display = 'flex';
+
+          if (this.path !== btn.getAttribute('data-url')) {
+            this.path = btn.getAttribute('data-url');
+            this.player.loadVideoById({
+              videoId: this.path
+            });
+          }
+        } else {
+          this.path = btn.getAttribute('data-url');
+          this.createPlayer(this.path);
+        }
+      });
+    });
+  }
+
+  bindCloseBtn() {
+    /**
+     * при клике на крестик вкрывает плеер
+     */
+    this.close.addEventListener('click', () => {
+      this.overlay.style.display = 'none';
+      this.player.stopVideo();
+    });
+  }
+
+  createPlayer(url) {
+    /**
+     * инициализирует плеер
+     */
+    this.player = new YT.Player('frame', {
+      height: '100%',
+      width: '100%',
+      videoId: `${url}`
+    });
+    console.log(this.player);
+    this.overlay.style.display = 'flex';
+  }
+
+  init() {
+    /**
+     * подклчает скрипт YouTube-Player-API на страницу
+     */
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    this.bindTriggers();
+    this.bindCloseBtn();
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/js/modules/playVideo/playVideoModules.js":
+/*!******************************************************!*\
+  !*** ./src/js/modules/playVideo/playVideoModules.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return PlayVideoModules; });
+/* harmony import */ var _playVideo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./playVideo */ "./src/js/modules/playVideo/playVideo.js");
+
+class PlayVideoModules extends _playVideo__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  /**
+   * НАСЛЕДНИК КЛАССА VideoPlayer
+   *
+   * triggers   -> селектор который открывает модальное окно
+   * overlay   -> серектор модального окно
+   */
+
+  /** ===========================
+   *        Конструктор        *
+   =========================== */
+  constructor(triggers, overlay) {
+    super(triggers, overlay);
+  }
+  /** ===========================
+   *     Публичные методы      *
+   =========================== */
+
+
+  bindTriggers() {
+    /**
+     * при клике на триггер показывает плеер (переопределенный)
+     */
+    this.btns.forEach((btn, i) => {
+      const blockedElem = btn.closest('.module__video-item').nextElementSibling;
+
+      if (i % 2 === 0) {
+        blockedElem.setAttribute('data-disabled', 'true');
+      }
+
+      btn.addEventListener('click', () => {
+        if (btn.closest('.module__video-item').getAttribute('data-disabled') !== 'true') {
+          this.activeBtn = btn;
+
+          if (document.querySelector('iframe#frame')) {
+            this.overlay.style.display = 'flex';
+
+            if (this.path !== btn.getAttribute('data-url')) {
+              this.path = btn.getAttribute('data-url');
+              this.player.loadVideoById({
+                videoId: this.path
+              });
+            }
+          } else {
+            this.path = btn.getAttribute('data-url');
+            this.createPlayer(this.path);
+          }
+        }
+      });
+    });
+  }
+
+  createPlayer(url) {
+    /**
+     * инициализирует плеер (переопределенный)
+     */
+    this.player = new YT.Player('frame', {
+      height: '100%',
+      width: '100%',
+      videoId: `${url}`,
+      events: {
+        'onStateChange': this.onPlayerStateChange.bind(this)
+      }
+    });
+    this.overlay.style.display = 'flex';
+  }
+
+  onPlayerStateChange(event) {
+    /**
+     * калбэк функция,которая следит за состоянием видио (новый)
+     */
+    if (!this.activeBtn.closest('.module__video-item').dataset.disabled) {
+      const blockedElem = this.activeBtn.closest('.module__video-item').nextElementSibling;
+      const playBtn = this.activeBtn.querySelector('svg').cloneNode(true);
+
+      if (event.data === 0) {
+        // 0 - видео закончилось
+        if (blockedElem.querySelector('.play__circle').classList.contains('closed')) {
+          blockedElem.querySelector('.play__circle').classList.remove('closed');
+          blockedElem.querySelector('svg').remove();
+          blockedElem.querySelector('.play__circle').appendChild(playBtn);
+          blockedElem.querySelector('.play__text').textContent = 'play video';
+          blockedElem.querySelector('.play__text').classList.remove('attention');
+          blockedElem.style.opacity = 1;
+          blockedElem.style.filter = 'none';
+          blockedElem.setAttribute('data-disabled', 'false');
+        }
+      }
+    }
+  }
+
+}
 
 /***/ }),
 
