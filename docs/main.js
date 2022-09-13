@@ -1792,7 +1792,7 @@ class MiniSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
   decorizeSlides() {
     /**
-     * задает класс активность и анимацию актовного слайда
+     * задает класс активность и анимацию активного слайда
      */
     Array.from(this.slides).forEach(slide => {
       slide.classList.remove(this.activeClass);

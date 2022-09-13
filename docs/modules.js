@@ -97,6 +97,10 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/slider/slider-main */ "./src/js/modules/slider/slider-main.js");
 /* harmony import */ var _modules_playVideo_playVideoModules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/playVideo/playVideoModules */ "./src/js/modules/playVideo/playVideoModules.js");
+/* harmony import */ var _modules_showInfo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/showInfo */ "./src/js/modules/showInfo.js");
+/* harmony import */ var _modules_download__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/download */ "./src/js/modules/download.js");
+
+
 
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -106,7 +110,69 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   modulesSlider.render();
   new _modules_playVideo_playVideoModules__WEBPACK_IMPORTED_MODULE_1__["default"]('.module__video-item .play', '.overlay').init();
+  new _modules_showInfo__WEBPACK_IMPORTED_MODULE_2__["default"]('.plus__content').init();
+  new _modules_download__WEBPACK_IMPORTED_MODULE_3__["default"]('.download').init();
 });
+
+/***/ }),
+
+/***/ "./src/js/modules/download.js":
+/*!************************************!*\
+  !*** ./src/js/modules/download.js ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Download; });
+class Download {
+  /**
+   * КЛАСС СКАЧАТЬ ФАЙЛ
+   *
+   * triggers   -> селектор при клике на который происходит скачивание
+   */
+
+  /** ===========================
+   *        Конструктор        *
+   =========================== */
+  constructor(triggers) {
+    this.btns = document.querySelectorAll(triggers);
+    this.path = 'assets/img/mainbg.jpg';
+  }
+  /** ===========================
+   *     Публичные методы      *
+   =========================== */
+
+
+  downloadItem(path) {
+    /**
+     * скачивает файлы
+     * path -> путь к файлу
+     */
+    const element = document.createElement('a');
+    element.setAttribute('href', path);
+    element.setAttribute('download', 'nice_picture');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+
+  init() {
+    /**
+     * инициализирует класс
+     */
+    this.btns.forEach(item => {
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', e => {
+        e.stopPropagation();
+        this.downloadItem(this.path);
+      });
+    });
+  }
+
+}
 
 /***/ }),
 
@@ -304,6 +370,51 @@ class PlayVideoModules extends _playVideo__WEBPACK_IMPORTED_MODULE_0__["default"
         }
       }
     }
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/js/modules/showInfo.js":
+/*!************************************!*\
+  !*** ./src/js/modules/showInfo.js ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ShowInfo; });
+class ShowInfo {
+  /**
+   * КЛАСС АККАРДИОН
+   *
+   * triggers   -> селектор по клику на который открывать скрытый контент
+   */
+
+  /** ===========================
+   *        Конструктор        *
+   =========================== */
+  constructor(triggers) {
+    this.btns = document.querySelectorAll(triggers);
+  }
+  /** ===========================
+   *     Публичные методы      *
+   =========================== */
+
+
+  init() {
+    /**
+     * инициализирует аккардион
+     */
+    this.btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sibling = btn.closest('.module__info-show').nextElementSibling;
+        sibling.classList.toggle('msg');
+        sibling.style.marginTop = '20px';
+      });
+    });
   }
 
 }

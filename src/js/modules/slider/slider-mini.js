@@ -21,7 +21,7 @@ export default class MiniSlider extends Slider {
 
   decorizeSlides() {
     /**
-     * задает класс активность и анимацию актовного слайда
+     * задает класс активность и анимацию активного слайда
      */
     Array.from(this.slides).forEach(slide => {
 
